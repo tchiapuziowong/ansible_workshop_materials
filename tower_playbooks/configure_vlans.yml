@@ -1,0 +1,10 @@
+- hosts: all
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role
+  tasks:
+    - name: "{{state}} - VLANs {{vlans}}"
+      aoscx_vlan:
+        vlan_id: "{{item}}"
+        state: "{{state}}"
+      loop: "{{vlans}}"

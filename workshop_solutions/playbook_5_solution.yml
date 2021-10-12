@@ -1,0 +1,35 @@
+- hosts: access_1,access_2
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role
+  vars:
+    students_vlan:
+      id: 100
+      name: STUDENTS_VLAN
+      interface: 1/1/1
+    staff_vlan:
+      id: 200
+      name: STAFF_VLAN
+      interface: 1/1/2
+  tasks:
+    - name: Create VLAN 100 - Students
+      aoscx_vlan:
+        vlan_id: "{{students_vlan.id}}"
+        name: "{{students_vlan.name}}"
+
+    - name: Create VLAN 200 - Staff
+      aoscx_vlan:
+        vlan_id: "{{staff_vlan.id}}"
+        name: "{{staff_vlan.name}}"
+
+    - name: Configure Interface 1/1/1 - vlan access 100
+      aoscx_l2_interface:
+        interface: "{{students_vlan.interface}}"
+        vlan_mode: access
+        vlan_access: "{{students_vlan.id}}"
+
+    - name: Configure Interface 1/1/2 - vlan access 200
+      aoscx_l2_interface:
+        interface: "{{staff_vlan.interface}}"
+        vlan_mode: access
+        vlan_access: "{{staff_vlan.id}}"

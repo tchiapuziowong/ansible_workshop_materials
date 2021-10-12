@@ -1,0 +1,23 @@
+- hosts: access_1,access_2
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role
+  vars:
+    vlans:
+      - 100
+      - 200
+  vars_files:
+    - vars_files/acl_entries.yml
+  tasks:
+    - name: Configure Global IPv4 ACL
+      aoscx_acl:
+        name: global_acl
+        type: ipv4
+        acl_entries: "{{global_acl_entries}}"
+
+    - name: Apply ipv4 ACL to Access VLANs
+      aoscx_acl_vlan:
+        acl_name: global_acl
+        acl_type: ipv4
+        acl_vlan_list: "{{item}}"
+      loop: "{{vlans}}"

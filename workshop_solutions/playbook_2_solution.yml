@@ -1,0 +1,14 @@
+- hosts: core
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role
+  tasks:
+    - name: Create VLAN 100 - Students
+      aoscx_vlan:
+        vlan_id: 100
+        name: STUDENTS_VLAN
+
+    - name: Create VLAN 200 - Staff
+      aoscx_vlan:
+        vlan_id: 200
+        name: STAFF_VLAN

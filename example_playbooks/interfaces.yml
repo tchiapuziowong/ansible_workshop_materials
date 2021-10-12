@@ -1,0 +1,96 @@
+---
+- hosts: all
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role
+  tasks:
+    - name: Create VLAN 200 with description
+      aoscx_vlan:
+        vlan_id: 200
+        description: This is VLAN 200
+
+    - name: Create VLAN 300 with description and name
+      aoscx_vlan:
+        vlan_id: 300
+        name: UPLINK_VLAN
+        description: This is VLAN 300
+
+    - name: Configure Interface 1/1/3 - vlan trunk allowed all
+      aoscx_l2_interface:
+        interface: 1/1/3
+        vlan_mode: trunk
+        trunk_allowed_all: True
+
+    - name: Delete Interface 1/1/3
+      aoscx_l2_interface:
+        interface: 1/1/3
+        state: delete
+
+    - name: Configure Interface 1/1/1 - vlan trunk allowed 200
+      aoscx_l2_interface:
+        interface: 1/1/1
+        vlan_mode: trunk
+        vlan_trunks: '200'
+
+    - name: Configure Interface 1/1/1 - vlan trunk allowed 200,300
+      aoscx_l2_interface:
+        interface: 1/1/1
+        vlan_mode: trunk
+        vlan_trunks: ['200','300']
+
+    - name: Configure Interface 1/1/1 - vlan trunk allowed 200,300 , vlan trunk native 200
+      aoscx_l2_interface:
+        interface: 1/1/3
+        vlan_mode: trunk
+        vlan_trunks: ['200','300']
+        native_vlan_id: '200'
+
+    - name: Configure Interface 1/1/4 - vlan access 200
+      aoscx_l2_interface:
+        interface: 1/1/4
+        vlan_mode: access
+        vlan_access: '200'
+
+    - name: Configure Interface 1/1/5 - vlan trunk allowed all, vlan trunk native 200 tag
+      aoscx_l2_interface:
+        interface: 1/1/5
+        vlan_mode: trunk
+        trunk_allowed_all: True
+        native_vlan_id: '200'
+        native_vlan_tag: True
+
+    - name: Configure Interface 1/1/6 - vlan trunk allowed all, vlan trunk native 200
+      aoscx_l2_interface:
+        interface: 1/1/6
+        vlan_mode: trunk
+        trunk_allowed_all: True
+        native_vlan_id: '200'
+
+    - name: Creating new L3 interface 1/1/3 with IPv4 and IPv6 address on VRF red
+      aoscx_l3_interface:
+        interface: 1/1/3
+        description: Uplink Interface
+        ipv4: ['10.20.1.3/24']
+        ipv6: ['2000:db8::1234/64']
+        vrf: red
+
+    - name: Creating new L3 interface 1/1/6 with IPv4 address on VRF default
+      aoscx_l3_interface:
+        interface: 1/1/6
+        ipv4: ['10.33.4.15/24']
+
+    - name: Deleting L3 Interface - 1/1/3
+      aoscx_l3_interface:
+        interface: 1/1/3
+        state: delete
+
+    - name: Create IP Helper Address on Interface 1/1/3
+      aoscx_l3_interface:
+        interface: 1/1/3
+        ip_helper_address: ['172.1.2.32']
+
+    - name: Update IP Helper Address on Interface 1/1/3
+      aoscx_l3_interface:
+        interface: 1/1/3
+        ip_helper_address: ['172.1.5.44']
+        state: update

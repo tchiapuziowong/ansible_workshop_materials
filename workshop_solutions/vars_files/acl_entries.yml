@@ -1,0 +1,13 @@
+global_acl_entries:
+  '10': {action: deny, count: true, dst_ip: 10.10.12.11/255.255.255.255, protocol: sctp,
+    src_ip: 10.10.12.12/255.255.255.255}
+  '20': {action: permit, count: false, dst_ip: 10.10.12.11/255.255.255.255, protocol: tcp,
+    src_ip: 10.10.12.12/255.255.255.255}
+  '30': {action: permit, count: false, dst_ip: 10.10.12.11/255.255.255.255, protocol: pim,
+    src_ip: 10.10.12.12/255.255.255.255}
+  '40': {action: permit, count: false, dst_ip: 10.10.12.11/255.255.255.255, protocol: icmp,
+    src_ip: 10.10.12.12/255.255.255.255}
+  '50': {action: permit, count: true, dst_ip: 10.10.12.11/255.255.255.255, protocol: pim,
+    src_ip: 10.10.12.12/255.255.255.255}
+  '9999': {action: permit, count: true, dst_ip: 0.0.0.0/0.0.0.0, protocol: any,
+    src_ip: 0.0.0.0/0.0.0.0}

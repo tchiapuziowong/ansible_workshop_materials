@@ -1,0 +1,36 @@
+---
+- hosts: all
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role
+  tasks:
+    - name: Create VLAN 200
+      aoscx_vlan:
+        vlan_id: 200
+        description: This is VLAN 200
+
+    - name: Create VLAN 100
+      aoscx_vlan:
+        vlan_id: 100
+        description: This is VLAN 100
+
+    - name: Create VLAN Interface 100
+      aoscx_vlan_interface:
+        vlan_id: 100
+        description: UPLINK_VLAN
+        ipv4: ['10.10.20.1/24']
+        ipv6: ['2000:db8::1234/64']
+
+    - name: Create VLAN Interface 200
+      aoscx_vlan_interface:
+        vlan_id: 200
+        description: UPLINK_VLAN
+        ipv4: ['10.20.20.1/24']
+        ipv6: ['3000:db8::1234/64']
+        vrf: red
+        ip_helper_address: ['10.40.20.1']
+
+    - name: Delete VLAN Interface 100
+      aoscx_vlan_interface:
+        vlan_id: 100
+        state: delete

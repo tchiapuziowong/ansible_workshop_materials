@@ -1,0 +1,81 @@
+---
+- hosts: all
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role  
+  tasks:
+    - name: Configure IPv4 ACL with entry - 1 deny tcp 10.10.12.12 10.10.12.11 count
+      aoscx_acl:
+        name: ipv4_acl_example
+        type: ipv4
+        acl_entries: {
+          '1': {action: deny, # ACL Entry Action - choices: ['permit', 'deny']
+                count: true, # Enable 'count' on the ACL Entry - choices: ['permit', 'deny']
+                dst_ip: 10.10.12.11/255.255.255.255,  # Matching Destination IPv4 address, format IP/MASK
+                protocol: tcp,  # Matching protocol
+                src_ip: 10.10.12.12/255.255.255.255 # Matching Source IPv4 address, format IP/MASK
+                }
+          }
+    - name: Configure IPv6 ACL with entry - 809 permit icmpv6 2001:db8::11 2001:db8::12
+      aoscx_acl:
+        name: ipv6_acl_example
+        type: ipv6
+        acl_entries: {
+          '809': {action: permit, # ACL Entry Action - choices: ['permit', 'deny']
+                  count: false, # Enable 'count' on the ACL Entry - choices: ['permit', 'deny']
+                  dst_ip: 2001:db8::11/ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff,  # Matching Destination IPv6 address, format IP/MASK
+                  protocol: icmpv6,  # Matching protocol
+                  src_ip: 2001:db8::12/ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff # Matching Source IPv6 address, format IP/MASK
+                  }
+          }
+    - name: Change existing IPv4 ACL Entry - 1 permit tcp 10.10.12.12 10.10.12.11 count
+      aoscx_acl:
+        name: ipv4_acl_example
+        type: ipv4
+        acl_entries: {
+          '1': {action: permit, # ACL Entry Action - choices: ['permit', 'deny']
+                count: true, # Enable 'count' on the ACL Entry - choices: ['permit', 'deny']
+                dst_ip: 10.10.12.11/255.255.255.255,  # Matching Destination IPv4 address, format IP/MASK
+                protocol: tcp,  # Matching protocol
+                src_ip: 10.10.12.12/255.255.255.255 # Matching Source IPv4 address, format IP/MASK
+                }
+          }
+        state: update
+
+    - name: Apply ipv4 ACL to interfaces
+      aoscx_acl_interface:
+        acl_name: ipv4_acl_example
+        acl_type: ipv4
+        acl_interface_list: ["1/1/2", "1/2/23"]
+
+    - name: Remove ipv4 ACL from interfaces
+      aoscx_acl_interface:
+        acl_name: ipv4_acl_example
+        acl_type: ipv4
+        acl_interface_list: ["1/1/2", "1/2/23"]
+        state: delete
+
+    - name: Apply ipv6 ACL to Interfaces
+      aoscx_acl_interface:
+        acl_name: ipv6_acl_example
+        acl_type: ipv6
+        acl_interface_list: ["1/1/2", "1/2/23"]
+
+    - name: Apply ipv4 ACL to VLANs
+      aoscx_acl_vlan:
+        acl_name: ipv4_acl_example
+        acl_type: ipv4
+        acl_vlan_list: [2, 4]
+
+    - name: Remove ipv4 ACL from VLANs
+      aoscx_acl_vlan:
+        acl_name: ipv4_acl_example
+        acl_type: ipv4
+        acl_vlan_list: [2, 4]
+        state: delete
+
+    - name: Apply ipv6 ACL to VLANs
+      aoscx_acl_vlan:
+        acl_name: ipv6_acl_example
+        acl_type: ipv6
+        acl_vlan_list: [2, 4]

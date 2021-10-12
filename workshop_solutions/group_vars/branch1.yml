@@ -1,0 +1,20 @@
+ansible_user: admin
+ansible_password: admin
+ansible_connection: httpapi
+ansible_network_os: aoscx
+ansible_httpapi_use_ssl: True
+ansible_acx_no_proxy: True
+ansible_httpapi_validate_certs: False
+students_vlan:
+  id: 100
+  name: STUDENTS_VLAN
+  interface: 1/1/1
+staff_vlan:
+  id: 200
+  name: STAFF_VLAN
+  interface: 1/1/2
+vlans:
+ - '10'
+ - '20'
+ - '30'
+ - '40', '50', '60', '70']

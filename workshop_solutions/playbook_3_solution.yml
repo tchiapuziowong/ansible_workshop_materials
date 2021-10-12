@@ -1,0 +1,38 @@
+- hosts: core
+  gather_facts: False
+  roles:
+    - role: arubanetworks.aoscx_role
+  tasks:
+    - name: Create VLAN 100 - Students
+      aoscx_vlan:
+        vlan_id: 100
+        name: STUDENTS_VLAN
+
+    - name: Create VLAN 200 - Staff
+      aoscx_vlan:
+        vlan_id: 200
+        name: STAFF_VLAN
+
+    - name: Configure IP VLAN 100
+      aoscx_vlan_interface:
+        vlan_id: 100
+        ipv4: ['10.0.100.1/24']
+
+    - name: Configure IP VLAN 200
+      aoscx_vlan_interface:
+        vlan_id: 200
+        ipv4: ['10.0.200.1/24']
+
+    - name: Configure Interface 1/1/1 - vlan trunk allowed 100,200
+      aoscx_l2_interface:
+        interface: 1/1/1
+        vlan_mode: trunk
+        vlan_trunks: [100,200]
+        native_vlan_id: '100'
+
+    - name: Configure Interface 1/1/2 - vlan trunk allowed 100,200
+      aoscx_l2_interface:
+        interface: 1/1/2
+        vlan_mode: trunk
+        vlan_trunks: [100,200]
+        native_vlan_id: '200'
